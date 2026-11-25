@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1246a3">
+<meta name="description" content="Smart Bazar online shopping demo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Smart Bazar</title>
+<style>
+:root{--blue:#1246a3;--deep:#0b2d70;--bg:#f3f6fc;--ink:#17243a;--muted:#64748b}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--deep),#2875e8);color:white;padding:18px 16px 22px;border-radius:0 0 22px 22px}
+.top{display:flex;align-items:center;justify-content:space-between;max-width:850px;margin:auto}.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800}.logo{width:42px;height:42px;border-radius:13px;background:white;color:var(--blue);display:grid;place-items:center;font-size:24px}
+.tag{font-size:12px;color:#dbeafe;margin-top:2px}.pill{border:1px solid #ffffff66;color:white;background:#ffffff18;border-radius:20px;padding:8px 12px}
+main{max-width:850px;margin:auto;padding:16px}.search{display:flex;gap:8px;margin-top:18px}.search input{flex:1;border:0;border-radius:12px;padding:13px;font-size:15px;min-width:0}.hero{background:white;border-radius:16px;padding:16px;margin:16px 0;box-shadow:0 4px 18px #102c5510}.hero b{color:var(--blue);font-size:18px}.hero p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tabs button,.btn{border:0;border-radius:11px;padding:10px 14px;background:#e2eaf8;color:var(--deep);font-weight:650;white-space:nowrap}.tabs button.active,.btn.primary{background:var(--blue);color:white}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:16px 0 10px}.sectionhead h2{font-size:18px;margin:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.product{background:white;border-radius:15px;padding:12px;box-shadow:0 3px 14px #102c550b}.pic{height:105px;border-radius:11px;background:#edf3ff;display:grid;place-items:center;font-size:42px}.product h3{font-size:15px;margin:9px 0 3px}.price{font-weight:800;color:var(--blue)}.small{font-size:12px;color:var(--muted)}.product .btn{width:100%;margin-top:9px}
+.panel{background:white;border-radius:15px;padding:15px;margin:12px 0}.row{display:flex;gap:9px;align-items:center;justify-content:space-between}.field{width:100%;padding:11px;border:1px solid #d8e0ed;border-radius:10px;margin:5px 0 10px;font:inherit}.hidden{display:none!important}.muted{color:var(--muted)}.item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf0f5}.bottom{position:sticky;bottom:0;background:#ffffffed;border-top:1px solid #e3e9f2;padding:9px;display:flex;justify-content:center;gap:8px;backdrop-filter:blur(10px)}.bottom button{flex:1;max-width:200px}
+footer{text-align:center;color:#8793a5;font-size:11px;padding:20px}
+@media(min-width:620px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pic{height:125px}}
+</style></head>
+<body>
+<header><div class="top"><div class="brand"><div class="logo">🛍️</div><div>Smart Bazar<div class="tag">Shop Smart. Live Better.</div></div></div><button class="pill" onclick="show('cart')">🛒 কার্ট <span id="cartCount">0</span></button></div>
+<div class="search"><input id="search" placeholder="পণ্য খুঁজুন..." oninput="renderProducts()"><button class="pill" onclick="renderProducts()">খুঁজুন</button></div></header>
+<main>
+<section id="home">
+<div class="hero"><b>স্বাগতম Smart Bazar-এ!</b><p>আপনার পছন্দের পণ্য সহজে খুঁজুন এবং অর্ডার করুন।</p></div>
+<div class="tabs"><button class="active" onclick="category='সব';setTab(this);renderProducts()">সব</button><button onclick="category='মোবাইল';setTab(this);renderProducts()">মোবাইল</button><button onclick="category='ইলেকট্রনিক্স';setTab(this);renderProducts()">ইলেকট্রনিক্স</button><button onclick="category='অ্যাক্সেসরিজ';setTab(this);renderProducts()">অ্যাক্সেসরিজ</button></div>
+<div class="sectionhead"><h2>জনপ্রিয় পণ্য</h2><span class="small">ডেমো ক্যাটালগ</span></div><div class="grid" id="products"></div>
+</section>
+<section id="cart" class="hidden"><div class="sectionhead"><h2>আপনার কার্ট</h2><button class="btn" onclick="show('home')">আরও কিনুন</button></div><div class="panel" id="cartItems"></div><div class="panel"><div class="row"><b>মোট</b><b id="total">₹0</b></div><button class="btn primary" style="width:100%;margin-top:12px" onclick="show('checkout')">অর্ডার করুন</button></div></section>
+<section id="checkout" class="hidden"><div class="sectionhead"><h2>অর্ডারের তথ্য</h2></div><div class="panel"><label>আপনার নাম</label><input class="field" id="custName" placeholder="নাম লিখুন"><label>মোবাইল নম্বর</label><input class="field" id="custPhone" inputmode="numeric" placeholder="১০ সংখ্যার নম্বর"><label>ডেলিভারি ঠিকানা</label><textarea class="field" id="custAddress" rows="3" placeholder="সম্পূর্ণ ঠিকানা"></textarea><p class="small">এই ডেমোতে অনলাইন পেমেন্ট চালু নেই। পেমেন্ট দোকানের সঙ্গে নিশ্চিত করুন।</p><button class="btn primary" style="width:100%" onclick="placeOrder()">অর্ডার নিশ্চিত করুন</button></div></section>
+<section id="orders" class="hidden"><div class="sectionhead"><h2>আমার অর্ডার</h2></div><div class="panel" id="orderList">এখনও কোনো অর্ডার নেই।</div></section>
+<section id="admin" class="hidden"><div class="sectionhead"><h2>অ্যাডমিন প্যানেল</h2></div><div class="panel"><b>নতুন পণ্য যোগ করুন</b><input class="field" id="pName" placeholder="পণ্যের নাম"><input class="field" id="pPrice" type="number" placeholder="দাম (₹)"><select class="field" id="pCat"><option>মোবাইল</option><option>ইলেকট্রনিক্স</option><option>অ্যাক্সেসরিজ</option></select><button class="btn primary" onclick="addProduct()">পণ্য যোগ করুন</button><p class="small">এটি ফোনের এই ব্রাউজারেই ডেটা রাখে। নিরাপদ অনলাইন অ্যাডমিন লগইন/সার্ভার এখনও যুক্ত হয়নি।</p></div><div class="panel"><b>অর্ডারসমূহ</b><div id="adminOrders" class="small">কোনো অর্ডার নেই।</div></div></section>
+</main>
+<nav class="bottom"><button class="btn primary" onclick="show('home')">🏠 হোম</button><button class="btn" onclick="show('orders')">📦 অর্ডার</button><button class="btn" onclick="show('admin')">⚙️ অ্যাডমিন</button></nav>
+<footer>Smart Bazar • প্রাথমিক ডেমো সংস্করণ</footer>
+<script>
+let products=[
+{id:1,name:'স্মার্টফোন',price:12999,cat:'মোবাইল',icon:'📱'},
+{id:2,name:'ব্লুটুথ ইয়ারবাড',price:899,cat:'অ্যাক্সেসরিজ',icon:'🎧'},
+{id:3,name:'স্মার্ট টিভি',price:18999,cat:'ইলেকট্রনিক্স',icon:'📺'},
+{id:4,name:'পাওয়ার ব্যাংক',price:1199,cat:'অ্যাক্সেসরিজ',icon:'🔋'},
+{id:5,name:'স্মার্ট ওয়াচ',price:1499,cat:'অ্যাক্সেসরিজ',icon:'⌚'},
+{id:6,name:'ল্যাপটপ',price:42999,cat:'ইলেকট্রনিক্স',icon:'💻'}];
+let cart=JSON.parse(localStorage.getItem('sb_cart')||'{}'),orders=JSON.parse(localStorage.getItem('sb_orders')||'[]'),category='সব';
+function save(){localStorage.setItem('sb_cart',JSON.stringify(cart));localStorage.setItem('sb_orders',JSON.stringify(orders));document.getElementById('cartCount').textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
+function setTab(el){document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));el.classList.add('active')}
+function renderProducts(){let q=document.getElementById('search').value.toLowerCase();let list=products.filter(p=>(category==='সব'||p.cat===category)&&p.name.toLowerCase().includes(q));document.getElementById('products').innerHTML=list.map(p=>`<div class="product"><div class="pic">${p.icon||'📦'}</div><h3>${p.name}</h3><div class="price">₹${p.price.toLocaleString('en-IN')}</div><div class="small">${p.cat}</div><button class="btn primary" onclick="addCart(${p.id})">কার্টে যোগ করুন</button></div>`).join('')||'<p class="muted">কোনো পণ্য পাওয়া যায়নি।</p>'}
+function addCart(id){cart[id]=(cart[id]||0)+1;save();alert('কার্টে যোগ হয়েছে!')}
+function show(id){['home','cart','checkout','orders','admin'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));if(id==='cart')renderCart();if(id==='orders')renderOrders();if(id==='admin')renderAdmin();window.scrollTo(0,0)}
+function renderCart(){let entries=Object.entries(cart).filter(([id,n])=>n>0);let total=0;document.getElementById('cartItems').innerHTML=entries.map(([id,n])=>{let p=products.find(x=>x.id==id);if(!p)return '';total+=p.price*n;return `<div class="item"><span>${p.icon||'📦'} ${p.name} × ${n}</span><b>₹${(p.price*n).toLocaleString('en-IN')}</b></div>`}).join('')||'কার্ট খালি।';document.getElementById('total').textContent='₹'+total.toLocaleString('en-IN')}
+function placeOrder(){let name=custName.value.trim(),phone=custPhone.value.trim(),address=custAddress.value.trim();if(!name||!phone||!address||Object.keys(cart).length===0){alert('নাম, ফোন, ঠিকানা ও কার্ট পূরণ করুন।');return}if(!/^[0-9]{10}$/.test(phone)){alert('সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন।');return}let lines=Object.entries(cart).map(([id,n])=>{let p=products.find(x=>x.id==id);return p?`${p.name} × ${n}`:''}).filter(Boolean);let amount=Object.entries(cart).reduce((s,[id,n])=>s+(products.find(p=>p.id==id)?.price||0)*n,0);orders.unshift({name,phone,address,lines,amount,date:new Date().toLocaleString('bn-IN'),status:'অর্ডার গ্রহণের অপেক্ষায়'});cart={};save();alert('ডেমো অর্ডারটি এই ডিভাইসে সংরক্ষিত হয়েছে। দোকানের সঙ্গে যোগাযোগ করে অর্ডার নিশ্চিত করুন।');show('orders')}
+function renderOrders(){document.getElementById('orderList').innerHTML=orders.length?orders.map(o=>`<div class="item"><div><b>₹${o.amount.toLocaleString('en-IN')}</b><div class="small">${o.date} • ${o.status}</div><div class="small">${o.lines.join(', ')}</div></div></div>`).join(''):'এখনও কোনো অর্ডার নেই।'}
+function renderAdmin(){document.getElementById('adminOrders').innerHTML=orders.length?orders.map(o=>`<div class="item"><span>${o.name} • ${o.phone}<br>${o.lines.join(', ')}<br><span class="muted">${o.address}</span></span><b>₹${o.amount}</b></div>`).join(''):'কোনো অর্ডার নেই।'}
+function addProduct(){let name=pName.value.trim(),price=Number(pPrice.value),cat=pCat.value;if(!name||price<=0){alert('পণ্যের নাম ও সঠিক দাম দিন।');return}products.push({id:Date.now(),name,price,cat,icon:'📦'});pName.value='';pPrice.value='';renderProducts();alert('পণ্য এই ব্রাউজারের ডেমো তালিকায় যোগ হয়েছে।')}
+save();renderProducts();
+</script><script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+</body></html>
